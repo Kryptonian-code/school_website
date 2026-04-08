@@ -1,6 +1,6 @@
 # School Website
 
-This project is a Ghanaian school website and admin CMS built with:
+This repository contains a Ghanaian school website and admin CMS built with:
 
 - React + Vite + TypeScript + Tailwind on the frontend
 - PHP + MySQL on the backend
@@ -28,14 +28,14 @@ This project is a Ghanaian school website and admin CMS built with:
 ## Local XAMPP Setup
 
 1. Import `backend/database.sql` into MySQL.
-2. Review `backend/config.php` and update DB credentials if needed.
+2. Review `backend/config.php` and update the database credentials if needed.
 3. Start Apache and MySQL in XAMPP.
 4. Install frontend dependencies with `npm install`.
 5. Run `npm run build` for the Apache-served build, or `npm run dev` for Vite development.
 
 ## Environment
 
-For the normal XAMPP + Vite development flow, keep:
+For the standard XAMPP + Vite development flow, use:
 
 ```env
 VITE_APP_BASE_PATH="/school-website"
@@ -44,7 +44,7 @@ VITE_DEV_API_PROXY_TARGET="http://localhost/school-website"
 VITE_ALLOWED_EXTERNAL_HOSTS="facebook.com,instagram.com,twitter.com,x.com,youtube.com,youtu.be,linkedin.com,wa.me,whatsapp.com,google.com,maps.google.com"
 ```
 
-Then use:
+The project can then be accessed at:
 
 - Apache app: `http://localhost/school-website/`
 - Vite dev app: `http://localhost:8080/`
@@ -52,7 +52,7 @@ Then use:
 Important:
 
 - `VITE_API_BASE_URL` should stay as `/backend` for the normal Apache/Vite proxy flow.
-- If you deploy into a different subfolder, update `VITE_APP_BASE_PATH` before building.
+- If the project is deployed into a different subfolder, update `VITE_APP_BASE_PATH` before building.
 
 ## First Admin Setup
 
@@ -67,8 +67,8 @@ After importing the schema on a fresh database:
 
 Important:
 
-- Production installs should create the first admin manually through this bootstrap flow.
-- The API will not silently recreate a default `Joseph` account anymore.
+- Production installs should create the first admin through this bootstrap flow.
+- The API will not silently recreate a default account anymore.
 - Existing databases keep their current admins and can still use the local-auth upgrade migration safely.
 
 ## Account Recovery
@@ -109,7 +109,7 @@ Role checks are enforced in the PHP API and mirrored in the React admin UI:
 
 ## InfinityFree Deployment
 
-Run:
+To prepare an InfinityFree deployment bundle, run:
 
 ```powershell
 npm.cmd run deploy:infinityfree
@@ -123,4 +123,4 @@ This creates `deploy/infinityfree` with the same deployment-friendly structure u
 - `index.html`
 - `.htaccess`
 
-Upload the contents of that folder into your InfinityFree `public_html` directory.
+Upload the contents of that folder into the InfinityFree `public_html` directory.
