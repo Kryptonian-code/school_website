@@ -1,0 +1,64 @@
+# InfinityFree optimized .htaccess for school-website
+# Deployed structure: dist/ contents at root, backend/, uploads/, assets/
+
+# Security headers
+Header always set X-Content-Type-Options nosniff
+Header always set X-Frame-Options DENY
+Header always set X-XSS-Protection "1; mode=block"
+Header always set Referrer-Policy strict-origin-when-cross-origin
+
+# Enable compression
+<IfModule mod_deflate.c>
+AddOutputFilterByType DEFLATE text/plain
+AddOutputFilterByType DEFLATE text/html
+AddOutputFilterByType DEFLATE text/xml
+AddOutputFilterByType DEFLATE text/css
+AddOutputFilterByType DEFLATE application/xml
+AddOutputFilterByType DEFLATE application/xhtml+xml
+AddOutputFilterByType DEFLATE application/rss+xml
+AddOutputFilterByType DEFLATE application/javascript
+AddOutputFilterByType DEFLATE application/x-javascript
+</IfModule>
+
+# Serve assets with long cache
+<IfModule mod_expires.c>
+ExpiresActive On
+ExpiresByType image/jpg "access plus 1 year"
+ExpiresByType image/jpeg "access plus 1 year"
+ExpiresByType image/gif "access plus 1 year"
+ExpiresByType image/png "access plus 1 year"
+ExpiresByType text/css "access plus 1 month"
+ExpiresByType application/pdf "access plus 1 month"
+ExpiresByType text/javascript "access plus 1 week"
+ExpiresByType application/javascript "access plus 1 week"
+ExpiresByType application/x-javascript "access plus 1 week"
+ExpiresDefault "access plus 2 days"
+</IfModule>
+
+# SPA routing - send all to index.html except backend and uploads
+<IfModule mod_rewrite.c>
+RewriteEngine On
+
+# Protect backend config
+RewriteRule ^backend/config\.php - [F]
+
+# Protect uploads .htaccess
+RewriteRule ^uploads/\.htaccess - [F]
+
+# Backend endpoints route through the backend front controller
+RewriteRule ^backend(?:/(.*))?$ backend/index.php [QSA,L]
+
+# Uploads pass through
+RewriteRule ^uploads/ - [L]
+
+# Assets pass through
+RewriteRule ^assets/ - [L]
+
+# All else to index.html
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.html [L]
+</IfModule>
+
+# Block access to hidden files
+RedirectMatch 404 /\..*$
