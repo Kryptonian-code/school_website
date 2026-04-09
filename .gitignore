@@ -28,6 +28,7 @@ vite.config.ts.timestamp-*.mjs
 .env.*
 !.env.example
 uploads/
+uploads/prov config
 backend/uploads/
 backend/*.sqlite
 backend/*.sqlite3

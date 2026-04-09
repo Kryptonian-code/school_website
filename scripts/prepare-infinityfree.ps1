@@ -7,6 +7,8 @@ $deployRoot = Join-Path $repoRoot "deploy\infinityfree"
 $backendSource = Join-Path $repoRoot "backend"
 $uploadsSource = Join-Path $repoRoot "uploads"
 $deployHtaccess = Join-Path $repoRoot "scripts\templates\infinityfree-root.htaccess"
+$deployBackendConfig = Join-Path $deployRoot "backend\config.php"
+$preservedBackendConfig = $null
 
 
 Write-Host "Building frontend..."
@@ -25,6 +27,11 @@ try {
 Write-Host "Preparing deployment folder..."
 New-Item -ItemType Directory -Force -Path $deployRoot | Out-Null
 
+# Preserve deploy-specific backend config if it already exists.
+if (Test-Path $deployBackendConfig) {
+    $preservedBackendConfig = Get-Content $deployBackendConfig -Raw
+}
+
 # Clean previous deploy
 if (Test-Path (Join-Path $deployRoot "*")) {
     Get-ChildItem -Force $deployRoot | Remove-Item -Recurse -Force
@@ -35,6 +42,10 @@ Copy-Item (Join-Path $distDir "*") $deployRoot -Recurse -Force
 
 # Copy backend (PHP)
 Copy-Item $backendSource (Join-Path $deployRoot "backend") -Recurse -Force
+
+if ($null -ne $preservedBackendConfig) {
+    Set-Content -Path $deployBackendConfig -Value $preservedBackendConfig -NoNewline
+}
 
 # Copy uploads folder
 Copy-Item $uploadsSource (Join-Path $deployRoot "uploads") -Recurse -Force

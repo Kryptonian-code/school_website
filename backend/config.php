@@ -133,6 +133,11 @@ return [
     ],
     'security' => [
         'site_origin' => $siteOrigin,
+        'content_security_policy' => env_value(
+            $projectEnv,
+            'CONTENT_SECURITY_POLICY',
+            "default-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https:; script-src 'self'; font-src 'self' data: https:; connect-src 'self'; frame-src 'self' https://www.google.com https://maps.google.com https://www.youtube.com https://youtube.com https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'"
+        ),
         'allowed_redirect_hosts' => array_values(array_filter(array_map(
             'normalize_host',
             csv_values(env_value(

@@ -6,6 +6,13 @@ $config = require __DIR__ . '/config.php';
 
 header('Content-Type: application/json; charset=utf-8');
 header('X-Robots-Tag: noindex, nofollow', true);
+header('X-Content-Type-Options: nosniff');
+header('X-Frame-Options: SAMEORIGIN');
+header('Referrer-Policy: strict-origin-when-cross-origin');
+header("Permissions-Policy: camera=(), microphone=(), geolocation=()");
+if (!empty($config['security']['content_security_policy'])) {
+    header('Content-Security-Policy: ' . $config['security']['content_security_policy']);
+}
 
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 if ($origin !== '' && (in_array($origin, $config['cors']['allowed_origins'], true) || is_same_site_origin($origin))) {
@@ -977,8 +984,14 @@ function execute_or_respond_conflict(PDOStatement $statement, array $payload, st
 
 function get_rate_limit_file(string $bucket): string
 {
-    $identifier = sha1($bucket . '|' . ($_SERVER['REMOTE_ADDR'] ?? 'unknown') . '|' . ($_SERVER['HTTP_USER_AGENT'] ?? ''));
+    $identifier = sha1($bucket . '|' . client_rate_limit_identifier());
     return rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'prestige_rate_' . $identifier . '.json';
+}
+
+function client_rate_limit_identifier(): string
+{
+    $remoteAddr = trim((string) ($_SERVER['REMOTE_ADDR'] ?? ''));
+    return $remoteAddr !== '' ? $remoteAddr : 'unknown';
 }
 
 function get_subject_rate_limit_file(string $bucket, string $subject): string
